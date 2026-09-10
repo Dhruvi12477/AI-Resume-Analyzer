@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResumeAI — AI-Powered Resume Analyzer</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<!-- Navigation Bar -->
+<nav class="navbar">
+    <div class="navbar-container">
+        <div class="logo-section">
+            <div class="logo-icon">✦</div>
+            <div class="logo-text">
+                <span class="brand-name">Felix-IT Resume Analyzer</span>
+                <span class="brand-tagline">Smart Career Assistant</span>
+            </div>
+        </div>
+        <div class="status-indicator">
+            <span class="status-dot"></span>
+            AI Engine Online
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<!-- <header class="hero">
+    <div class="hero-content">
+        <div class="hero-badge">🚀 AI-Powered Analysis</div>
+        <h1 class="hero-title">Analyze Your Resume<br><span class="gradient-text">Like Never Before</span></h1>
+        <p class="hero-description">Let AI evaluate your resume against job requirements and get actionable insights to boost your career prospects</p>
+    </div>
+    <div class="hero-background">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+    </div>
+</header> -->
+
+<!-- Main Content -->
+<main class="container">
+
+    <!-- Upload Section -->
+    <section class="upload-section">
+        <div class="section-header">
+            <h2>Upload & Analyze</h2>
+            <p>Select your resume and target role to get started</p>
+        </div>
+
+        <div class="upload-container">
+            <!-- File Upload -->
+            <div class="upload-card">
+                <div class="dropzone" id="dropzone">
+                    <input type="file" id="resumeFile" accept=".pdf,.docx" hidden>
+                    <div class="upload-icon">📄</div>
+                    <h3>Drop your resume here</h3>
+                    <p>or <span class="click-text">click to browse</span></p>
+                    <small>Supports PDF & DOCX (Max 10MB)</small>
+                    <div class="file-preview" id="filePreview"></div>
+                </div>
+            </div>
+
+            <!-- Job Role Selection -->
+            <div class="role-selection-card">
+                <div class="card-header">
+                    <h3>Target Job Role</h3>
+                    <span class="card-icon">🎯</span>
+                </div>
+                <select id="targetRole" class="role-select">
+                    <option value="">Select a role...</option>
+                    <option value="UI/UX Designer">UI/UX Designer</option>
+                    <option value="Product Designer">Product Designer</option>
+                    <option value="Frontend Developer">Frontend Developer</option>
+                    <option value="Backend Developer">Backend Developer</option>
+                    <option value="Full Stack Developer">Full Stack Developer</option>
+                    <option value="Data Scientist">Data Scientist</option>
+                    <option value="Data Analyst">Data Analyst</option>
+                    <option value="Machine Learning Engineer">Machine Learning Engineer</option>
+                    <option value="Python Developer">Python Developer</option>
+                    <option value="Java Developer">Java Developer</option>
+                    <option value="Cloud Engineer">Cloud Engineer</option>
+                    <option value="DevOps Engineer">DevOps Engineer</option>
+                    <option value="Cybersecurity Analyst">Cybersecurity Analyst</option>
+                    <option value="QA Engineer">QA Engineer</option>
+                    <option value="Mobile App Developer">Mobile App Developer</option>
+                </select>
+
+                <button id="analyzeBtn" class="analyze-btn" onclick="analyzeResume()">
+                    <span class="btn-icon">✨</span>
+                    <span class="btn-text">Analyze Resume</span>
+                    <span class="btn-shine"></span>
+                </button>
+
+                <div class="loading-state" id="loading">
+                    <div class="loader"></div>
+                    <p>AI is analyzing your resume...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results Section -->
+    <section id="results" class="results-section" style="display: none;">
+        
+        <!-- Result Header -->
+        <div class="result-header">
+            <div>
+                <span class="result-badge">Analysis Complete</span>
+                <h2 id="resultTitle">Your Resume Profile</h2>
+                <p id="resultMessage"></p>
+            </div>
+            <div class="status-badge" id="statusBadge">Analyzing...</div>
+        </div>
+
+        <!-- Score Cards Grid -->
+        <div class="score-grid">
+            <div class="score-card primary-score">
+                <div class="score-header">
+                    <span class="score-label">Overall Score</span>
+                    <span class="score-emoji">📊</span>
+                </div>
+                <div class="score-value" id="overallScore">0</div>
+                <div class="score-max">/ 100</div>
+                <div class="score-indicator"></div>
+            </div>
+
+            <div class="score-card">
+                <div class="score-header">
+                    <span class="score-label">Job Readiness</span>
+                    <span class="score-emoji">💼</span>
+                </div>
+                <div class="score-value-small" id="readinessScore">0%</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="readinessProgress"></div>
+                </div>
+            </div>
+
+            <div class="score-card">
+                <div class="score-header">
+                    <span class="score-label">ATS Score</span>
+                    <span class="score-emoji">🤖</span>
+                </div>
+                <div class="score-value-small" id="atsScore">0%</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="atsProgress"></div>
+                </div>
+            </div>
+
+            <div class="score-card">
+                <div class="score-header">
+                    <span class="score-label">Shortlist Probability</span>
+                    <span class="score-emoji">⭐</span>
+                </div>
+                <div class="score-value-small" id="shortlistScore">0%</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="shortlistProgress"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analysis Panels Grid -->
+        <div class="panels-grid">
+            <!-- Skills Analysis -->
+            <div class="analysis-panel">
+                <div class="panel-header">
+                    <h3>🎯 Skills Analysis</h3>
+                </div>
+                <div class="skill-match-display">
+                    <div class="skill-match-value" id="skillMatch">0%</div>
+                    <span class="skill-match-label">Skill Match</span>
+                </div>
+
+                <div class="panel-section">
+                    <h4>Skills Found</h4>
+                    <div class="tags-container" id="skillsFound"></div>
+                </div>
+
+                <div class="panel-section">
+                    <h4>Missing Skills</h4>
+                    <div class="tags-container missing-tags" id="missingSkills"></div>
+                </div>
+            </div>
+
+            <!-- Candidate Profile -->
+            <div class="analysis-panel">
+                <div class="panel-header">
+                    <h3>👤 Candidate Profile</h3>
+                </div>
+                <div class="profile-grid">
+                    <div class="profile-item">
+                        <span class="profile-label">Target Role</span>
+                        <strong id="targetRoleResult">-</strong>
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label">Experience</span>
+                        <strong id="experience">-</strong>
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label">Projects</span>
+                        <strong id="projects">-</strong>
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label">Resume Quality</span>
+                        <strong id="quality">-</strong>
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label">Overall Level</span>
+                        <strong id="level">-</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Strengths -->
+            <div class="analysis-panel">
+                <div class="panel-header">
+                    <h3>✨ Strengths</h3>
+                </div>
+                <div class="recommendations-list" id="strengths"></div>
+            </div>
+
+            <!-- Recommendations -->
+            <div class="analysis-panel">
+                <div class="panel-header">
+                    <h3>💡 Recommendations</h3>
+                </div>
+                <div class="recommendations-list" id="recommendations"></div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="result-actions">
+            <button class="action-btn primary-btn" onclick="downloadReport()">
+                <span>📥</span> Download Report
+            </button>
+            <button class="action-btn secondary-btn" onclick="analyzeAgain()">
+                <span>🔄</span> Analyze Another Resume
+            </button>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-content">
+            <h2>Ready to Boost Your Resume?</h2>
+            <p>Get insights powered by advanced AI and machine learning</p>
+            <button class="cta-btn" onclick="document.getElementById('resumeFile').click()">
+                Start Analysis Now
+            </button>
+        </div>
+    </section>
+
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="footer-content">
+        <p>© 2024 ResumeAI. Powered by Machine Learning</p>
+        <p class="footer-subtitle">Help you get the job you deserve</p>
+    </div>
+</footer>
+
+<script src="/static/script.js"></script>
+</body>
+</html>
