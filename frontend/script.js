@@ -93,6 +93,9 @@ async function analyzeResume() {
     resultsSection.style.display = "none";
     
     try {
+
+        const API_URL = "https://ai-resume-analyzer-backend.onrender.com";
+
         const response = await fetch(
             `/api/analyze?target_role=${encodeURIComponent(targetRole)}`,
             {
